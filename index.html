@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>쿠마당고</title>
     <!-- 폰트 (타이틀만 적용) -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gasoek+One&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gasoek+One&display=swap" rel="stylesheet">
     <!-- 기타 폰트 및 스타일 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/suit-font@1.0.0/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-jp.css" />
@@ -346,6 +346,31 @@
             text-align: center;
             font-family: inherit;
         }
+        .quiz-input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .quiz-check-btn {
+            padding: 9px 22px;
+            background: #ffe6bc;
+            color: #7d5f3b;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.08rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 1.5px 5px #ffe6bc7a;
+            letter-spacing: 0.04em;
+            transition: background 0.18s, color 0.16s;
+        }
+        .quiz-check-btn:hover {
+            background: #ffd6b0;
+            color: #f06a6a;
+        }
         .quiz-btn-group {
             display: flex;
             justify-content: center;
@@ -353,9 +378,9 @@
             margin-top: 8px;
         }
         .quiz-result-msg {
-            font-size: 1.16rem;
+            font-size: 1.13rem;
             text-align: center;
-            margin: 16px 0 4px 0;
+            margin: 10px 0 4px 0;
             color: #f06a6a;
             font-weight: bold;
         }
@@ -798,13 +823,25 @@
                     ${quizExample}
                 </div>
                 <div class="example-kr" style="margin-bottom:8px;color:#a8a6a5;font-size:1.05rem;">${word.example_kr}</div>
-                <input type="text" class="quiz-answer-input" id="quiz-answer-input" autocomplete="off"
-                    placeholder="정답을 입력하세요" onkeydown="if(event.key==='Enter'){quizCheckAnswer();}">
+                <div class="quiz-input-group">
+                    <input type="text" class="quiz-answer-input" id="quiz-answer-input" autocomplete="off"
+                        placeholder="정답을 입력하세요" onkeydown="if(event.key==='Enter'){quizCheckAnswer();}">
+                    <button class="quiz-check-btn" onclick="quizCheckAnswer()">확인</button>
+                </div>
+                <div class="quiz-result-msg" id="quiz-result-msg" style="display:none;"></div>
                 <div class="card-idx-indicator" style="margin-top:16px;">${shownIdx} / ${total}</div>
             `;
             document.getElementById('quiz-btn-group').style.display = "flex";
             document.getElementById('quiz-next-btn').disabled = false;
             document.getElementById('quiz-show-btn').disabled = false;
+            // 입력창 초기화 및 포커스
+            setTimeout(() => {
+                if(document.getElementById('quiz-answer-input')) {
+                    document.getElementById('quiz-answer-input').value = "";
+                    document.getElementById('quiz-answer-input').focus();
+                }
+            }, 0);
+            // 결과 메시지 숨김
             document.getElementById('quiz-result-msg').style.display = "none";
         }
 
