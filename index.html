@@ -462,6 +462,16 @@
             color: #f06a6a;
             border: 2px solid #f06a6a;
         }
+        /* 화면 폭이 380px 이하일 때만 적용 */
+@media (max-width: 380px) {
+  .quiz-input-group { 
+    flex-wrap: wrap;      /* 입력창 + 버튼이 위아래로 배치되도록 */
+  }
+  .quiz-check-btn { 
+    width: 100%;          /* 버튼을 한 줄 전체로 차지하게 */
+    text-align: center;   /* 글씨 가운데 정렬 */
+  }
+}     
     </style>
 </head>
 <body>
@@ -914,5 +924,6 @@
     </script>
 </body>
 </html>
+
 
 
