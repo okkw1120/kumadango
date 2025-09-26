@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쿠마당고</title>
+    <!-- 둥글둥글한 제목용 폰트: Cafe24SsurroundAir + UhBee zzibae fallback -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Cafe24SsurroundAir.woff2" as="font" type="font/woff2" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=UhBee+zzibae&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/suit-font@1.0.0/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-jp.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Cafe24SsurroundAir';
+            font-weight: normal;
+            font-style: normal;
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Cafe24SsurroundAir.woff2') format('woff2');
+        }
+        body {
+            font-family: 'SUIT', 'Pretendard Variable', 'Noto Sans KR', 'Malgun Gothic', Arial, sans-serif;
+            background: #fffbe0;
+            margin: 0;
+            padding: 0;
+        }
+        .main-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+        }
+        .home-btn {
+            position: absolute;
+            left: 12px;
+            top: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .home-icon {
+            width: 22px;
+            height: 22px;
+            display: block;
+            color: #6b430c;
+            fill: #6b430c;
+            transition: color 0.13s, fill 0.13s;
+        }
+        .home-btn:hover .home-icon {
+            color: #b57c2a;
+            fill: #b57c2a;
+        }
+        .kuma-title {
+            margin-top: 46px;
+            margin-bottom: 20px;
+            font-size: 2.7rem;
+            font-family: 'Cafe24SsurroundAir', 'UhBee zzibae', 'SUIT', 'Pretendard Variable', 'Noto Sans KR', sans-serif;
+            color: #926c37;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-align: center;
+            text-shadow: 2px 3px 0 #ffeec1, 0 0 8px #fff8ec;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 18px;
+        }
+        .kuma-emoji {
+            font-size: 2.4rem;
+            vertical-align: middle;
+            margin-right: 0px;
+        }
+        .dango-emoji {
+            font-size: 2.1rem;
+            vertical-align: middle;
+            margin-left: 0px;
+        }
+        .vertical-tab-bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            margin: 70px 0 0 0;
+            width: 220px;
+            position: relative;
+        }
+        .vertical-tab-btn {
+            width: 100%;
+            font-family:'Cafe24SsurroundAir', 'UhBee zzibae', 'SUIT', 'Pretendard Variable', 'Noto Sans KR', sans-serif;
+            background: #fff;
+            border: 2.5px solid #ffe6bc;
+            color: #a16e0f;
+            font-size: 1.35rem;
+            font-weight: 700;
+            border-radius: 18px;
+            padding: 24px 0;
+            cursor: pointer;
+            box-shadow: 0 1.5px 8px #ffe6bc63;
+            letter-spacing: 0.06em;
+            transition: background .18s, color .16s, border .18s, box-shadow .17s;
+            margin: 0;
+        }
+        .vertical-tab-btn.active {
+            background: #ffe6bc;
+            color: #f06a6a;
+            border: 2.5px solid #f06a6a;
+            box-shadow: 0 3px 12px #ffe6bc7c;
+        }
+        .vertical-tab-btn:active {
+            background: #ffd6b0;
+        }
+        .card-area {
+            width: 340px;
+            background: #fff6f9;
+            border-radius: 28px;
+            box-shadow: 0 6px 32px rgba(255, 188, 197, 0.16), 0 1.5px 6px #ffe6bc;
+            padding: 33px 22px 22px 22px;
+            margin-bottom: 32px;
+            display: none; /* 홈에서는 안보이게! */
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            justify-content: center;
+            border: 3.5px solid #ffe6bc;
+        }
+        .speak-btn, .example-speak-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            font-size: 1.9rem;
+            color: #e7a162;
+            z-index: 2;
+            transition: color 0.15s;
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+        }
+        .speak-btn { position: absolute; top: 15px; right: 15px; font-size: 1.9rem; }
+        .speak-btn:hover, .example-speak-btn:hover { color: #f06a6a; }
+        .speak-btn.active, .example-speak-btn.active { color: #ff6b29 !important; }
+        .speaker-wave {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5px;
+            margin-left: 5px;
+            height: 18px;
+        }
+        .wave-bar { width: 3px; height: 7px; background: #ffb97a; border-radius: 2px; opacity: 0.85; animation: wave 0.9s infinite; transform-origin: bottom;}
+        .wave-bar:nth-child(2) { animation-delay: 0.18s;}
+        .wave-bar:nth-child(3) { animation-delay: 0.36s;}
+        @keyframes wave { 0%{height:7px;} 20%{height:17px;} 40%{height:7px;} 60%{height:15px;} 80%{height:7px;} 100%{height:7px;}}
+        .speaker-wave { visibility: hidden; }
+        .speak-btn.active .speaker-wave,
+        .example-speak-btn.active .speaker-wave { visibility: visible; }
+        .example-speak-btn .speaker-wave { height: 14px; margin-left: 5px; }
+        .example-speak-btn .wave-bar { width: 2px; border-radius: 1.5px; }
+        .jp-word {
+            font-size: 2.2rem;
+            color: #7d5f3b;
+            font-weight: 800;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 7px;
+            margin-top: 6px;
+            text-align: center;
+            letter-spacing: 0.06em;
+            width: 100%;
+            border-radius: 12px;
+            padding: 2px 0;
+            transition: background 0.15s;
+        }
+        .jp-word:hover {
+            background: #fffbe0;
+        }
+        .yomigana {
+            font-size: 1.12rem;
+            color: #e7a162;
+            margin-bottom: 10px;
+            min-height: 1.5em;
+            transition: opacity 0.2s;
+            opacity: 0;
+            pointer-events: none;
+            text-align: center;
+            width: 100%;
+        }
+        .show-yomigana { opacity: 1 !important; pointer-events: auto; animation: fade-in 0.25s;}
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        .meaning-btn {
+            margin-top: 10px;
+            padding: 9px 32px 9px 32px;
+            border: none;
+            background: #ffe6bc;
+            color: #7d5f3b;
+            border-radius: 18px;
+            font-size: 1.13rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 1.5px 5px #ffe6bc7a;
+            letter-spacing: 0.06em;
+            transition: background 0.19s, color 0.17s;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .meaning-btn:hover { background: #ffd6b0; color: #f06a6a; }
+        .meaning-box {
+            background: #fffbe7;
+            color: #7d5f3b;
+            margin-top: 25px;
+            border-radius: 18px;
+            padding: 18px 10px 13px 10px;
+            width: 100%;
+            font-size: 1.14rem;
+            box-shadow: 0 0.5px 5px #ffe6bc66;
+            word-break: keep-all;
+            text-align: center;
+            transition: opacity 0.25s;
+            position: relative;
+            border: 1.7px solid #ffd6b0;
+        }
+        .example-jp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #926c37;
+            font-size: 1.04rem;
+            margin-top: 15px;
+            margin-bottom: 3px;
+            font-weight: bold;
+            text-align: center;
+            gap: 6px;
+        }
+        .example-kr {
+            display: block;
+            color: #a8a6a5;
+            font-size: 1.01rem;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+        .btn-group {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            margin-top: 6px;
+        }
+        .review-btn {
+            padding: 10px 24px;
+            background: #fffbe0;
+            color: #a16e0f;
+            border: 2px solid #ffe6bc;
+            border-radius: 18px;
+            font-size: 1.02rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.17s, color 0.16s, border 0.17s;
+            box-shadow: 0 1.5px 5px #ffe6bc4a;
+        }
+        .review-btn.active,
+        .review-btn.selected {
+            background: #ffe6bc;
+            color: #f06a6a;
+            border: 2px solid #f06a6a;
+        }
+        .review-btn:active {
+            background: #ffd6b0;
+        }
+        .next-btn {
+            padding: 11px 40px;
+            border: none;
+            background: #ffe6bc;
+            color: #7d5f3b;
+            border-radius: 18px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 1.5px 5px #ffe6bc7a;
+            letter-spacing: 0.06em;
+            transition: background 0.18s, color 0.16s;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .next-btn:hover {
+            background: #ffd6b0;
+            color: #f06a6a;
+        }
+        .know-btn {
+            padding: 10px 24px;
+            background: #d9f5d3;
+            color: #2d7d2c;
+            border: 2px solid #b4e5ae;
+            border-radius: 18px;
+            font-size: 1.02rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: background 0.15s, color 0.13s, border 0.14s;
+        }
+        .know-btn:hover {
+            background: #b4e5ae;
+            color: #1f5e1d;
+        }
+        .quiz-answer-input {
+            margin: 20px auto 8px auto;
+            padding: 12px 16px;
+            font-size: 1.1rem;
+            border-radius: 14px;
+            border: 2px solid #ffe6bc;
+            background: #fffbe7;
+            color: #7d5f3b;
+            outline: none;
+            width: 85%;
+            box-sizing: border-box;
+            text-align: center;
+            font-family: inherit;
+        }
+        .quiz-btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 8px;
+        }
+        .quiz-result-msg {
+            font-size: 1.16rem;
+            text-align: center;
+            margin: 16px 0 4px 0;
+            color: #f06a6a;
+            font-weight: bold;
+        }
+        .review-list {
+            margin: 24px auto 0 auto;
+            padding: 20px 16px 10px 16px;
+            border-radius: 18px;
+            background: #fffdf2;
+            border: 2px solid #ffe6bc;
+            max-width: 400px;
+            box-shadow: 0 2px 12px #ffe6bc47;
+        }
+        .review-list-title {
+            font-size: 1.17rem;
+            font-weight: bold;
+            color: #926c37;
+            margin-bottom: 12px;
+        }
+        .review-list-ul {
+            list-style: none;
+            padding: 0 0 0 0;
+            margin: 0;
+        }
+        .review-list-li {
+            padding: 7px 0;
+            border-bottom: 1px dashed #ffe6bc;
+            font-size: 1.07rem;
+            color: #7d5f3b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .review-list-li:last-child {
+            border-bottom: none;
+        }
+        .review-jp {
+            font-weight: bold;
+            font-size: 1.13rem;
+            color: #a16e0f;
+        }
+        .review-kr {
+            color: #a8a6a5;
+            font-size: 0.94rem;
+        }
+        .card-idx-indicator {
+            margin-top: 8px;
+            font-size: 1.05rem;
+            color: #d3ac6f;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .result-msg {
+            margin: 32px 0 0 0;
+            font-size: 1.25rem;
+            color: #a16e0f;
+            font-weight: 700;
+            text-align: center;
+            background: #fffbe0;
+            padding: 24px 16px;
+            border-radius: 20px;
+            border: 2px solid #ffe6bc;
+        }
+        .goto-home-btn {
+            padding: 8px 30px;
+            background: #fff;
+            color: #a16e0f;
+            border: 2px solid #ffe6bc;
+            border-radius: 18px;
+            font-size: 1.11rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 24px;
+            margin-bottom: 8px;
+            box-shadow: 0 1.5px 5px #ffe6bc4a;
+            transition: background 0.17s, color 0.16s, border 0.17s;
+        }
+        .goto-home-btn:hover {
+            background: #ffe6bc;
+            color: #f06a6a;
+            border: 2px solid #f06a6a;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <button class="home-btn" id="home-btn" title="홈으로" aria-label="홈으로">
+            <svg class="home-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 4.4L4 11.07V20a1 1 0 0 0 1 1h5.5V15h3v6H19a1 1 0 0 0 1-1v-8.93L12 4.4z"/>
+            </svg>
+        </button>
+        <div class="kuma-title">
+            <span class="kuma-emoji">🐻</span>
+            쿠마당고
+            <span class="dango-emoji">🍡</span>
+        </div>
+        <!-- 홈 화면 탭: 단어학습, 복습, 퀴즈만 보이게 -->
+        <div class="vertical-tab-bar" id="vertical-tab-bar">
+            <button class="vertical-tab-btn" id="vtab-main" onclick="selectHomeTab('main')">단어 학습</button>
+            <button class="vertical-tab-btn" id="vtab-review" onclick="selectHomeTab('review')">복습</button>
+            <button class="vertical-tab-btn" id="vtab-quiz" onclick="selectHomeTab('quiz')">퀴즈</button>
+        </div>
+        <div class="card-area" id="card-area" style="display:none;"></div>
+        <div class="card-idx-indicator" id="card-indicator"></div>
+        <div class="btn-group" id="btn-group">
+            <button class="review-btn" id="review-btn" onclick="markForReview()">복습</button>
+            <button class="next-btn" id="next-btn" onclick="showNextCard()">다음</button>
+        </div>
+        <div class="btn-group" id="review-btn-group" style="display:none;">
+            <button class="review-btn" id="review-again-btn" onclick="reviewAgain()">복습</button>
+            <button class="know-btn" id="review-know-btn" onclick="reviewKnow()">외웠어요!</button>
+        </div>
+        <div class="quiz-btn-group" id="quiz-btn-group" style="display:none;">
+            <button class="next-btn" id="quiz-next-btn" onclick="quizNext()">다음</button>
+            <button class="next-btn" id="quiz-show-btn" onclick="quizShowAnswer()">정답 보기</button>
+        </div>
+        <div class="quiz-result-msg" id="quiz-result-msg" style="display:none;"></div>
+        <div class="result-msg" id="result-msg" style="display:none;"></div>
+        <div class="review-list" id="review-list" style="display:none;"></div>
+    </div>
+    <script>
+        const words = [
+            {
+                jp: "학교", yomigana: "がっこう", kr: "학교",
+                example_jp: "私は毎日학교に行きます.",
+                example_kr: "나는 매일 학교에 갑니다."
+            },
+            {
+                jp: "友達", yomigana: "ともだち", kr: "친구",
+                example_jp: "友達と映画を見に行きました.",
+                example_kr: "친구와 영화를 보러 갔어요."
+            },
+            {
+                jp: "勉強", yomigana: "べんきょう", kr: "공부",
+                example_jp: "今日もたくさん勉強しました.",
+                example_kr: "오늘도 많이 공부했습니다."
+            },
+            {
+                jp: "先生", yomigana: "せんせい", kr: "선생님",
+                example_jp: "先生が新しい本をくれました.",
+                example_kr: "선생님이 새 책을 주셨어요."
+            },
+            {
+                jp: "本", yomigana: "ほん", kr: "책",
+                example_jp: "この本はとても面白いです.",
+                example_kr: "이 책은 매우 재미있어요."
+            }
+        ];
+
+        function shuffle(array) {
+            let arr = [...array];
+            let m = arr.length, t, i;
+            while (m) {
+                i = Math.floor(Math.random() * m--);
+                t = arr[m];
+                arr[m] = arr[i];
+                arr[i] = t;
+            }
+            return arr;
+        }
+
+        let mainWords = shuffle(words);
+        let reviewWords = [];
+        let quizWords = [];
+        let allReviewedWords = [];
+        let mode = "";
+        let currentIdx = 0;
+        let reviewSet = new Set();
+        let finished = false;
+        let quizShowedAnswer = false;
+
+        function goHome() {
+            document.getElementById('review-list').style.display = "none";
+            document.getElementById('result-msg').style.display = "none";
+            document.getElementById('btn-group').style.display = "none";
+            document.getElementById('review-btn-group').style.display = "none";
+            document.getElementById('quiz-btn-group').style.display = "none";
+            document.getElementById('quiz-result-msg').style.display = "none";
+            document.getElementById('vertical-tab-bar').style.display = "flex";
+            mainWords = shuffle(words);
+            reviewWords = [];
+            quizWords = [];
+            mode = "";
+            currentIdx = 0;
+            finished = false;
+            // 카드 영역 숨김!
+            document.getElementById('card-area').style.display = "none";
+            document.getElementById('card-indicator').textContent = "";
+            setActiveHomeTab();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('home-btn').addEventListener('click', goHome);
+            goHome();
+        });
+
+        function setActiveHomeTab(tab) {
+            let main = document.getElementById('vtab-main');
+            let review = document.getElementById('vtab-review');
+            let quiz = document.getElementById('vtab-quiz');
+            main.classList.toggle('active', tab === 'main');
+            review.classList.toggle('active', tab === 'review');
+            quiz.classList.toggle('active', tab === 'quiz');
+        }
+
+        function selectHomeTab(tab) {
+            setActiveHomeTab(tab);
+            document.getElementById('vertical-tab-bar').style.display = "none";
+            document.getElementById('card-area').style.display = "flex";
+            if (tab === 'main') {
+                mode = "main";
+                mainWords = shuffle(words);
+                currentIdx = 0;
+                finished = false;
+                renderCard(currentIdx);
+                document.getElementById('btn-group').style.display = "flex";
+                document.getElementById('review-btn-group').style.display = "none";
+                document.getElementById('quiz-btn-group').style.display = "none";
+                document.getElementById('quiz-result-msg').style.display = "none";
+            } else if (tab === 'review') {
+                mode = "review";
+                let uniq = [];
+                let seen = new Set();
+                for (const w of allReviewedWords) {
+                    if (!seen.has(w.jp)) {
+                        uniq.push(w);
+                        seen.add(w.jp);
+                    }
+                }
+                reviewWords = uniq.length > 0 ? uniq : [];
+                currentIdx = 0;
+                finished = false;
+                if (reviewWords.length === 0) {
+                    document.getElementById('card-area').innerHTML = `
+                      <div style="font-size:1.17rem;margin:70px 0 35px 0;text-align:center;color:#a16e0f;font-family:'Cafe24SsurroundAir','UhBee zzibae',sans-serif;">
+                        복습한 단어가 없습니다.
+                      </div>
+                    `;
+                    document.getElementById('btn-group').style.display = "none";
+                    document.getElementById('review-btn-group').style.display = "none";
+                    document.getElementById('quiz-btn-group').style.display = "none";
+                    document.getElementById('card-indicator').textContent = "";
+                    return;
+                }
+                renderReviewList();
+            } else if (tab === 'quiz') {
+                mode = "quiz";
+                quizWords = shuffle(words);
+                currentIdx = 0;
+                quizShowedAnswer = false;
+                renderQuizCard(currentIdx);
+                document.getElementById('btn-group').style.display = "none";
+                document.getElementById('review-btn-group').style.display = "none";
+                document.getElementById('quiz-btn-group').style.display = "flex";
+                document.getElementById('quiz-result-msg').style.display = "none";
+            }
+        }
+
+        function renderReviewList() {
+            let w = reviewWords[currentIdx];
+            let total = reviewWords.length;
+            let shownIdx = currentIdx + 1;
+            document.getElementById('card-area').innerHTML = `
+                <div class="jp-word" onclick="toggleYomigana(this)" style="margin-bottom:10px;">${w.jp}</div>
+                <div class="yomigana" style="margin-bottom:13px;">${w.yomigana}</div>
+                <div class="meaning-box" style="margin-bottom:12px;">
+                    <div><b>뜻:</b> ${w.kr}</div>
+                    <span class="example-jp" style="margin-top:10px;">
+                        ${w.example_jp}
+                    </span>
+                    <span class="example-kr">${w.example_kr}</span>
+                </div>
+                <div class="card-idx-indicator">${shownIdx} / ${total}</div>
+                <div class="quiz-btn-group" style="margin-top:12px;">
+                    <button class="next-btn" onclick="reviewListPrev()">이전</button>
+                    <button class="next-btn" onclick="reviewListNext()">다음</button>
+                </div>
+            `;
+        }
+        window.reviewListPrev = function() {
+            if (currentIdx > 0) currentIdx--;
+            else currentIdx = reviewWords.length - 1;
+            renderReviewList();
+        }
+        window.reviewListNext = function() {
+            if (currentIdx < reviewWords.length - 1) currentIdx++;
+            else currentIdx = 0;
+            renderReviewList();
+        }
+
+        function speakJapanese(text, btn) {
+            const synth = window.speechSynthesis;
+            if (synth.speaking) synth.cancel();
+
+            btn.classList.add('active');
+
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'ja-JP';
+            utter.rate = 1.0;
+
+            utter.onend = utter.onerror = function() {
+                if(btn) btn.classList.remove('active');
+            };
+
+            synth.speak(utter);
+        }
+
+        function renderCard(idx) {
+            let word = mainWords[idx];
+            let total = mainWords.length;
+            let shownIdx = idx + 1;
+            const cardArea = document.getElementById('card-area');
+            cardArea.innerHTML = `
+                <button class="speak-btn" onclick="speakJapanese('${word.jp}', this)" aria-label="발음 듣기">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="display:inline-block;vertical-align:middle;">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1-3.29-2.5-4.03v8.06c1.5-.74 2.5-2.26 2.5-4.03z" fill="currentColor"/>
+                        <path d="M14.5 3.97v2.06C17.09 7.36 19 10.07 19 13s-1.91 5.64-4.5 6.97v2.06c4.01-1.25 7-4.97 7-9.03s-2.99-7.78-7-9.03z" fill="currentColor"/>
+                    </svg>
+                    <span class="speaker-wave">
+                        <span class="wave-bar"></span>
+                        <span class="wave-bar"></span>
+                        <span class="wave-bar"></span>
+                    </span>
+                </button>
+                <div class="jp-word" onclick="toggleYomigana(this)">${word.jp}</div>
+                <div class="yomigana">${word.yomigana}</div>
+                <button class="meaning-btn" onclick="showMeaning()">뜻 보기</button>
+                <div class="meaning-box" id="meaning-box" style="display:none;">
+                    <div><b>뜻:</b> ${word.kr}</div>
+                    <span class="example-jp">
+                        ${word.example_jp}
+                        <button class="example-speak-btn" onclick="speakJapanese('${word.example_jp}', this)" title="예문 듣기" aria-label="예문 듣기">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="display:inline-block;vertical-align:middle;">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1-3.29-2.5-4.03v8.06c1.5-.74 2.5-2.26 2.5-4.03z" fill="currentColor"/>
+                                <path d="M14.5 3.97v2.06C17.09 7.36 19 10.07 19 13s-1.91 5.64-4.5 6.97v2.06c4.01-1.25 7-4.97 7-9.03s-2.99-7.78-7-9.03z" fill="currentColor"/>
+                            </svg>
+                            <span class="speaker-wave">
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                            </span>
+                        </button>
+                    </span>
+                    <span class="example-kr">${word.example_kr}</span>
+                </div>
+            `;
+            document.getElementById('card-indicator').textContent = `${shownIdx} / ${total}`;
+            document.getElementById('btn-group').style.display = "flex";
+            document.getElementById('review-btn-group').style.display = "none";
+            document.getElementById('quiz-btn-group').style.display = "none";
+            document.getElementById('review-btn').classList.toggle('selected', reviewSet.has(word.jp));
+            document.getElementById('review-btn').disabled = false;
+            document.getElementById('next-btn').textContent = (shownIdx === total) ? "끝내기" : "다음";
+            document.getElementById('result-msg').style.display = "none";
+            document.getElementById('review-list').style.display = "none";
+            document.getElementById('quiz-result-msg').style.display = "none";
+        }
+
+        function markForReview() {
+            if (mode === "main") {
+                let word = mainWords[currentIdx];
+                reviewSet.add(word.jp);
+                showNextCard();
+            }
+        }
+
+        function showMeaning() {
+            document.querySelector('.meaning-btn').style.display = 'none';
+            document.getElementById('meaning-box').style.display = 'block';
+        }
+
+        function showNextCard() {
+            if (mode === "main") {
+                if (currentIdx < mainWords.length - 1) {
+                    currentIdx++;
+                    renderCard(currentIdx);
+                } else {
+                    finishMain();
+                }
+            }
+        }
+
+        function finishMain() {
+            let reviewedNow = mainWords.filter(w => reviewSet.has(w.jp));
+            for(const w of reviewedNow) {
+                if (!allReviewedWords.some(x=>x.jp===w.jp)) allReviewedWords.push(w);
+            }
+            document.getElementById('card-area').innerHTML = `
+                <div style="font-size:1.3rem;margin:70px 0 20px 0;text-align:center;color:#a16e0f;font-family:'Cafe24SsurroundAir','UhBee zzibae',sans-serif;">
+                    모든 단어를 학습 완료했어요! 🎉
+                </div>
+                <button class="goto-home-btn" onclick="goHome()">돌아가기</button>
+            `;
+            document.getElementById('card-indicator').textContent = "";
+            document.getElementById('btn-group').style.display = "none";
+        }
+
+        // ----------- 퀴즈 모드 -----------
+        function renderQuizCard(idx) {
+            let word = quizWords[idx];
+            let total = quizWords.length;
+            let shownIdx = idx + 1;
+            quizShowedAnswer = false;
+            let blank = "＿＿＿";
+            let quizExample = word.example_jp.replaceAll(word.jp, blank);
+            const cardArea = document.getElementById('card-area');
+            cardArea.innerHTML = `
+                <div style="font-size:1.19rem;margin-bottom:18px;text-align:center;color:#926c37;">
+                    <b>빈칸에 들어갈 단어를 맞혀보세요!</b>
+                </div>
+                <div class="example-jp" style="font-size:1.22rem; margin-bottom:6px;">
+                    ${quizExample}
+                </div>
+                <div class="example-kr" style="margin-bottom:8px;color:#a8a6a5;font-size:1.05rem;">${word.example_kr}</div>
+                <input type="text" class="quiz-answer-input" id="quiz-answer-input" autocomplete="off"
+                    placeholder="정답을 입력하세요" onkeydown="if(event.key==='Enter'){quizCheckAnswer();}">
+                <div class="card-idx-indicator" style="margin-top:16px;">${shownIdx} / ${total}</div>
+            `;
+            document.getElementById('quiz-btn-group').style.display = "flex";
+            document.getElementById('quiz-next-btn').disabled = false;
+            document.getElementById('quiz-show-btn').disabled = false;
+            document.getElementById('quiz-result-msg').style.display = "none";
+        }
+
+        function quizCheckAnswer() {
+            const input = document.getElementById('quiz-answer-input');
+            if (!input) return;
+            const userAns = input.value.trim();
+            let word = quizWords[currentIdx];
+            const answer = word.jp.trim();
+            const resultMsg = document.getElementById('quiz-result-msg');
+            if (userAns === "") {
+                resultMsg.textContent = "정답을 입력해 주세요.";
+                resultMsg.style.color = "#f06a6a";
+                resultMsg.style.display = "block";
+                return;
+            }
+            if (userAns === answer) {
+                resultMsg.textContent = "정답입니다! 🐻🍡";
+                resultMsg.style.color = "#2d7d2c";
+            } else {
+                resultMsg.textContent = "아쉽지만 오답이에요!";
+                resultMsg.style.color = "#f06a6a";
+            }
+            resultMsg.style.display = "block";
+            quizShowedAnswer = false;
+        }
+
+        function quizShowAnswer() {
+            let word = quizWords[currentIdx];
+            const resultMsg = document.getElementById('quiz-result-msg');
+            resultMsg.innerHTML = `<b>정답: ${word.jp}</b><br><span style="color:#a8a6a5;font-size:0.98rem;">뜻: ${word.kr}</span>`;
+            resultMsg.style.color = "#7d5f3b";
+            resultMsg.style.display = "block";
+            quizShowedAnswer = true;
+        }
+
+        function quizNext() {
+            if (currentIdx < quizWords.length - 1) {
+                currentIdx++;
+                renderQuizCard(currentIdx);
+            } else {
+                document.getElementById('card-area').innerHTML = `
+                  <div style="font-size:1.35rem;margin:70px 0 35px 0;text-align:center;color:#a16e0f;font-family:'Cafe24SsurroundAir','UhBee zzibae',sans-serif;">
+                    모든 퀴즈를 마쳤어요!<br>잘했어요 🐻🍡
+                  </div>
+                  <button class="goto-home-btn" onclick="goHome()">돌아가기</button>
+                `;
+                document.getElementById('quiz-btn-group').style.display = "none";
+                document.getElementById('quiz-result-msg').style.display = "none";
+                setActiveHomeTab();
+            }
+        }
+        window.quizCheckAnswer = quizCheckAnswer;
+
+        function finishReview() {
+            for(const w of reviewWords) {
+                if (!allReviewedWords.some(x=>x.jp===w.jp)) allReviewedWords.push(w);
+            }
+            showResultMessage("복습까지 모두 끝났어요! 잘했어요 🐻✨");
+            finished = true;
+            setActiveHomeTab();
+        }
+
+        // 요미가나 토글: jp-word를 누르면 바로 아래 .yomigana에 show-yomigana 클래스를 토글
+        function toggleYomigana(wordElem) {
+            const yomiganaElem = wordElem.nextElementSibling;
+            if (!yomiganaElem) return;
+            yomiganaElem.classList.toggle('show-yomigana');
+        }
+    </script>
+</body>
+</html>
