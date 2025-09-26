@@ -4,19 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>쿠마당고</title>
-    <!-- 둥글둥글한 제목용 폰트: Cafe24SsurroundAir + UhBee zzibae fallback -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Cafe24SsurroundAir.woff2" as="font" type="font/woff2" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=UhBee+zzibae&display=swap" rel="stylesheet">
+    <!-- 폰트 (타이틀만 적용) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gasoek+One&display=swap" rel="stylesheet">
+    <!-- 기타 폰트 및 스타일 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/suit-font@1.0.0/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-jp.css" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @font-face {
-            font-family: 'Cafe24SsurroundAir';
-            font-weight: normal;
-            font-style: normal;
-            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.1/Cafe24SsurroundAir.woff2') format('woff2');
-        }
         body {
             font-family: 'SUIT', 'Pretendard Variable', 'Noto Sans KR', 'Malgun Gothic', Arial, sans-serif;
             background: #fffbe0;
@@ -62,9 +58,10 @@
             margin-top: 46px;
             margin-bottom: 20px;
             font-size: 2.7rem;
-            font-family: 'Cafe24SsurroundAir', 'UhBee zzibae', 'SUIT', 'Pretendard Variable', 'Noto Sans KR', sans-serif;
+ 		 font-family: "Gasoek One", sans-serif;
+  		font-style: normal;
             color: #926c37;
-            font-weight: 900;
+            font-weight: 400;
             letter-spacing: 0.08em;
             text-align: center;
             text-shadow: 2px 3px 0 #ffeec1, 0 0 8px #fff8ec;
@@ -82,6 +79,32 @@
             font-size: 2.1rem;
             vertical-align: middle;
             margin-left: 0px;
+        }
+        .level-bar {
+            margin-top: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+        .level-label {
+            color: #a16e0f;
+            font-size: 1.08rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+        .level-select {
+            font-size: 1.08rem;
+            border-radius: 12px;
+            border: 2px solid #ffe6bc;
+            padding: 7px 16px 7px 10px;
+            background: #fff8ef;
+            color: #a16e0f;
+            font-family: inherit;
+            cursor: pointer;
+            font-weight: 500;
+            transition: border 0.13s, color 0.13s, background 0.13s;
         }
         .vertical-tab-bar {
             display: flex;
@@ -124,7 +147,7 @@
             box-shadow: 0 6px 32px rgba(255, 188, 197, 0.16), 0 1.5px 6px #ffe6bc;
             padding: 33px 22px 22px 22px;
             margin-bottom: 32px;
-            display: none; /* 홈에서는 안보이게! */
+            display: none;
             flex-direction: column;
             align-items: center;
             position: relative;
@@ -428,7 +451,17 @@
             쿠마당고
             <span class="dango-emoji">🍡</span>
         </div>
-        <!-- 홈 화면 탭: 단어학습, 복습, 퀴즈만 보이게 -->
+        <!-- 레벨 선택 바 -->
+        <div class="level-bar">
+            <span class="level-label">레벨</span>
+            <select id="level-select" class="level-select" onchange="onLevelChange(this.value)">
+                <option value="n5" selected>N5</option>
+                <option value="n4">N4</option>
+                <option value="n3">N3</option>
+                <option value="n2">N2</option>
+                <option value="n1">N1</option>
+            </select>
+        </div>
         <div class="vertical-tab-bar" id="vertical-tab-bar">
             <button class="vertical-tab-btn" id="vtab-main" onclick="selectHomeTab('main')">단어 학습</button>
             <button class="vertical-tab-btn" id="vtab-review" onclick="selectHomeTab('review')">복습</button>
@@ -453,33 +486,57 @@
         <div class="review-list" id="review-list" style="display:none;"></div>
     </div>
     <script>
-        const words = [
-            {
-                jp: "학교", yomigana: "がっこう", kr: "학교",
-                example_jp: "私は毎日학교に行きます.",
-                example_kr: "나는 매일 학교에 갑니다."
-            },
-            {
-                jp: "友達", yomigana: "ともだち", kr: "친구",
-                example_jp: "友達と映画を見に行きました.",
-                example_kr: "친구와 영화를 보러 갔어요."
-            },
-            {
-                jp: "勉強", yomigana: "べんきょう", kr: "공부",
-                example_jp: "今日もたくさん勉強しました.",
-                example_kr: "오늘도 많이 공부했습니다."
-            },
-            {
-                jp: "先生", yomigana: "せんせい", kr: "선생님",
-                example_jp: "先生が新しい本をくれました.",
-                example_kr: "선생님이 새 책을 주셨어요."
-            },
-            {
-                jp: "本", yomigana: "ほん", kr: "책",
-                example_jp: "この本はとても面白いです.",
-                example_kr: "이 책은 매우 재미있어요."
-            }
-        ];
+        // 레벨별 단어장 데이터 (예시)
+        const WORDS_BY_LEVEL = {
+            n5: [
+                {jp: "학교", yomigana: "がっこう", kr: "학교", example_jp: "私は毎日学校に行きます.", example_kr: "나는 매일 학교에 갑니다."},
+                {jp: "友達", yomigana: "ともだち", kr: "친구", example_jp: "友達と映画を見に行きました.", example_kr: "친구와 영화를 보러 갔어요."},
+                {jp: "勉強", yomigana: "べんきょう", kr: "공부", example_jp: "今日もたくさん勉強しました.", example_kr: "오늘도 많이 공부했습니다."},
+                {jp: "先生", yomigana: "せんせい", kr: "선생님", example_jp: "先生が新しい本をくれました.", example_kr: "선생님이 새 책을 주셨어요."},
+                {jp: "本", yomigana: "ほん", kr: "책", example_jp: "この本はとても面白いです.", example_kr: "이 책은 매우 재미있어요."}
+            ],
+            n4: [
+                {jp: "必要", yomigana: "ひつよう", kr: "필요", example_jp: "パスポートが必要です。", example_kr: "여권이 필요합니다."},
+                {jp: "経験", yomigana: "けいけん", kr: "경험", example_jp: "多くの経験を積みました。", example_kr: "많은 경험을 쌓았습니다."}
+            ],
+            n3: [
+                {jp: "理解", yomigana: "りかい", kr: "이해", example_jp: "彼の説明は理解できませんでした。", example_kr: "그의 설명은 이해할 수 없었습니다."}
+            ],
+            n2: [
+                {jp: "対応", yomigana: "たいおう", kr: "대응", example_jp: "迅速な対応をお願いします。", example_kr: "신속한 대응 부탁드립니다."}
+            ],
+            n1: [
+                {jp: "抽象적", yomigana: "ちゅうしょうてき", kr: "추상적", example_jp: "抽象的な表現は難しいです。", example_kr: "추상적인 표현은 어렵습니다."}
+            ]
+        };
+
+        let currentLevel = "n5";
+        let words = [...WORDS_BY_LEVEL[currentLevel]];
+
+        function setWordsByLevel(level) {
+            words = [...(WORDS_BY_LEVEL[level] || [])];
+        }
+
+        function onLevelChange(level) {
+            currentLevel = level;
+            setWordsByLevel(level);
+            mainWords = shuffle(words);
+            reviewWords = [];
+            quizWords = [];
+            allReviewedWords = [];
+            mode = "";
+            currentIdx = 0;
+            reviewSet = new Set();
+            finished = false;
+            quizShowedAnswer = false;
+            document.getElementById('card-area').style.display = "none";
+            document.getElementById('btn-group').style.display = "none";
+            document.getElementById('review-btn-group').style.display = "none";
+            document.getElementById('quiz-btn-group').style.display = "none";
+            document.getElementById('quiz-result-msg').style.display = "none";
+            document.getElementById('card-indicator').textContent = "";
+            setActiveHomeTab();
+        }
 
         function shuffle(array) {
             let arr = [...array];
@@ -517,7 +574,6 @@
             mode = "";
             currentIdx = 0;
             finished = false;
-            // 카드 영역 숨김!
             document.getElementById('card-area').style.display = "none";
             document.getElementById('card-indicator').textContent = "";
             setActiveHomeTab();
@@ -625,17 +681,13 @@
         function speakJapanese(text, btn) {
             const synth = window.speechSynthesis;
             if (synth.speaking) synth.cancel();
-
             btn.classList.add('active');
-
             const utter = new SpeechSynthesisUtterance(text);
             utter.lang = 'ja-JP';
             utter.rate = 1.0;
-
             utter.onend = utter.onerror = function() {
                 if(btn) btn.classList.remove('active');
             };
-
             synth.speak(utter);
         }
 
